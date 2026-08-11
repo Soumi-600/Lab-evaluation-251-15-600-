@@ -1,1 +1,92 @@
+import java.util.*;
 
+interface Account {
+    void deposit(double amt) throws InvalidAmountException;
+    void withdraw(double amt) throws InvalidAmountException;
+}
+
+class InvalidAmountException extends Exception {
+    public InvalidAmountException(String message) {
+        super(message);
+    }
+}
+
+abstract class BaseAccount implements Account {
+    protected double balance;
+
+    BaseAccount(double balance) {
+        this.balance = balance;
+    }
+
+    public void deposit(double amt) throws InvalidAmountException {
+        if (amt < 0) {
+            throw new InvalidAmountException("Amount cannot be negative");
+        }
+
+        balance += amt;
+    }
+
+    public void withdraw(double amt) throws InvalidAmountException {
+        if (amt < 0) {
+            throw new InvalidAmountException("Amount cannot be negative");
+        }
+
+        if (amt > balance) {
+            throw new InvalidAmountException("Insufficient balance");
+        }
+
+        balance -= amt;
+    }
+
+    abstract double interestRate();
+}
+
+class SavingsAccount extends BaseAccount {
+
+    SavingsAccount(double balance) {
+        super(balance);
+    }
+
+    double interestRate() {
+        return 0.04;   // 4% interest
+    }
+}
+
+public class Main {
+
+    public static void main(String[] args) {
+
+        Scanner sc = new Scanner(System.in);
+
+        double startingBalance = sc.nextDouble();
+
+        SavingsAccount account =
+                new SavingsAccount(startingBalance);
+
+        while (sc.hasNext()) {
+
+            String operation = sc.next();
+            double amount = sc.nextDouble();
+
+            try {
+
+                if (operation.equals("deposit")) {
+                    account.deposit(amount);
+                }
+                else if (operation.equals("withdraw")) {
+                    account.withdraw(amount);
+                }
+
+            } catch (InvalidAmountException e) {
+                System.out.println("Error: " + e.getMessage());
+            }
+        }
+
+        // Apply interest
+        account.balance =
+                account.balance +
+                account.balance * account.interestRate();
+
+        System.out.printf("Final Balance: %.2f%n", account.balance);
+    }
+}
