@@ -1,1 +1,42 @@
 
+import java.util.*;
+
+class DivisionByZeroException extends Exception {
+    DivisionByZeroException(String msg) {
+        super(msg);
+    }
+}
+
+class NegativeOperandException extends Exception {
+    NegativeOperandException(String msg) {
+        super(msg);
+    }
+}
+
+class Calculator {
+    int divide(int a, int b)
+            throws DivisionByZeroException, NegativeOperandException {
+
+        if (a < 0 || b < 0)
+            throw new NegativeOperandException("Operands cannot be negative");
+
+        if (b == 0)
+            throw new DivisionByZeroException("Cannot divide by zero");
+
+        return a / b;
+    }
+}
+
+public class Custom{
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        int a = sc.nextInt();
+        int b = sc.nextInt();
+
+        try {
+            System.out.println(new Calculator().divide(a, b));
+        } catch (Exception e) {
+            System.out.println("Error: " + e.getMessage());
+        }
+    }
+}
