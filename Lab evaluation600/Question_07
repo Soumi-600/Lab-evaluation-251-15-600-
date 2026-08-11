@@ -1,1 +1,73 @@
 
+import java.util.*;
+
+abstract class Employee implements Comparable<Employee> {
+    String name;
+
+    Employee(String name) {
+        this.name = name;
+    }
+
+    abstract double computeSalary();
+
+    public int compareTo(Employee e) {
+        return Double.compare(e.computeSalary(), computeSalary());
+    }
+}
+
+class SalariedEmployee extends Employee {
+    double salary;
+
+    SalariedEmployee(String name, double salary) {
+        super(name);
+        this.salary = salary;
+    }
+
+    double computeSalary() {
+        return salary;
+    }
+}
+
+class HourlyEmployee extends Employee {
+    double hours, rate;
+
+    HourlyEmployee(String name, double hours, double rate) {
+        super(name);
+        this.hours = hours;
+        this.rate = rate;
+    }
+
+    double computeSalary() {
+        return hours * rate;
+    }
+}
+
+public class Payroll {
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+
+        int n = sc.nextInt();
+        ArrayList<Employee> list = new ArrayList<>();
+
+        for (int i = 0; i < n; i++) {
+            String type = sc.next();
+            String name = sc.next();
+
+            if (type.equals("SALARIED")) {
+                double salary = sc.nextDouble();
+                list.add(new SalariedEmployee(name, salary));
+            } else {
+                double hours = sc.nextDouble();
+                double rate = sc.nextDouble();
+                list.add(new HourlyEmployee(name, hours, rate));
+            }
+        }
+
+        Collections.sort(list);
+
+        for (Employee e : list) {
+            System.out.println(e.getClass().getSimpleName() + " "
+                    + e.name + " " + e.computeSalary());
+        }
+    }
+}
